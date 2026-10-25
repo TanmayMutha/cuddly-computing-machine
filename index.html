@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Something good</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8ECF6; --card:#F8F9FD; --ink:#171B3A; --muted:#5A6082; --line:#C9CFE4;
+  --solve:#FFC93C; --solve-ink:#3A2A00; --read:#8FD3F4; --read-ink:#07304A; --accent:#3446D6;
+  --head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#14172E; --card:#1D2142; --ink:#EEF0FB; --muted:#9AA1C8; --line:#323862; --accent:#8D9BFF;}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:16px/1.5 var(--body);min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:28px}
+h1{font:800 28px/1 var(--head);margin:0;letter-spacing:-.02em}
+nav{display:flex;gap:6px}
+nav button{font:500 15px var(--body);background:none;border:1px solid transparent;color:var(--muted);padding:7px 14px;border-radius:99px;cursor:pointer}
+nav button[aria-current=true]{background:var(--ink);color:var(--paper)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:0;border-radius:22px;padding:34px 20px;font:800 clamp(24px,6vw,38px)/1.05 var(--head);letter-spacing:-.02em;text-align:left;cursor:pointer;min-height:170px;display:flex;align-items:flex-end;transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile.solve{background:var(--solve);color:var(--solve-ink)}
+.tile.read{background:var(--read);color:var(--read-ink)}
+.count{color:var(--muted);font-size:14px;margin:12px 2px 24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px}
+.card h2{font:800 30px/1.1 var(--head);margin:0 0 4px;letter-spacing:-.02em;word-break:break-word}
+.dom{color:var(--muted);margin:0 0 12px;font-size:15px}
+.note{margin:0 0 18px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:transparent;border-radius:99px;padding:9px 16px;cursor:pointer;text-decoration:none;font-weight:500;font-size:15px;display:inline-block}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (prefers-color-scheme:dark){.btn.primary{color:#0E1230}}
+.btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.flip{animation:flip .3s ease-out}
+@keyframes flip{from{transform:rotateX(-70deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.flip{animation:none}.tile{transition:none}}
+h3{font:800 20px var(--head);margin:30px 0 8px}
+label{display:block;font-size:14px;color:var(--muted);margin:12px 0 4px}
+input[type=text],input[type=url],select,textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:110px;resize:vertical}
+.seg{display:flex;gap:8px;margin:12px 0}
+.seg label{margin:0;color:var(--ink);display:flex;gap:6px;align-items:center;border:1px solid var(--line);padding:8px 14px;border-radius:99px;background:var(--card)}
+.help{color:var(--muted);font-size:14px;margin:6px 0 0}
+.list{list-style:none;margin:14px 0 0;padding:0}
+.list li{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.list .main{flex:1;min-width:0}
+.list a{font-weight:600;color:var(--ink);word-break:break-word}
+.list small{display:block;color:var(--muted)}
+.pill{border:0;border-radius:99px;padding:3px 11px;font-size:13px;font-weight:600;cursor:pointer}
+.pill.solve{background:var(--solve);color:var(--solve-ink)}
+.pill.read{background:var(--read);color:var(--read-ink)}
+.icon{background:none;border:0;font-size:20px;cursor:pointer;padding:4px 6px;color:var(--muted)}
+.icon.liked{color:#E5396B}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+.bar input{flex:1;min-width:140px}.bar select{width:auto}
+.found{list-style:none;padding:0;margin:12px 0}
+.found li{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.found select{width:auto}
+.empty{color:var(--muted);padding:20px 0}
+@media (max-width:480px){.tile{min-height:130px;padding:22px 16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Something good</h1>
+    <nav aria-label="Sections">
+      <button data-v="draw" aria-current="true">Draw</button>
+      <button data-v="add">Add</button>
+      <button data-v="lib">Library</button>
+    </nav>
+  </header>
+
+  <section id="draw">
+    <div class="tiles">
+      <button class="tile solve" data-k="solve">Solve something</button>
+      <button class="tile read" data-k="read">Read something</button>
+    </div>
+    <p class="count" id="count"></p>
+    <article class="card" id="result" hidden></article>
+  </section>
+
+  <section id="add" hidden>
+    <h3 style="margin-top:0">Add a website</h3>
+    <label for="mUrl">Link</label>
+    <input type="url" id="mUrl" placeholder="https://projecteuler.net">
+    <label for="mTitle">Name (optional)</label>
+    <input type="text" id="mTitle" placeholder="Project Euler">
+    <label for="mNote">Why it's good (optional)</label>
+    <input type="text" id="mNote" placeholder="Math problems that need code">
+    <div class="seg" role="radiogroup" aria-label="Type">
+      <label><input type="radio" name="mKind" value="solve" checked> Solve</label>
+      <label><input type="radio" name="mKind" value="read"> Read</label>
+    </div>
+    <button class="btn primary" id="mAdd">Save website</button>
+    <p class="help" id="mMsg" role="status"></p>
+
+    <h3>Add from an Instagram reel</h3>
+    <p class="help">Instagram doesn't let other websites read a reel, so paste the reel's link and its caption (open the reel, tap "more", copy the text). Sites named in the caption are picked out for you. If the link is only in the bio or comments, paste that text too.</p>
+    <label for="rLink">Reel link</label>
+    <input type="url" id="rLink" placeholder="https://www.instagram.com/reel/...">
+    <label for="rText">Caption or comments</label>
+    <textarea id="rText" placeholder="Paste the text here"></textarea>
+    <div style="margin-top:12px"><button class="btn primary" id="rFind">Find websites</button></div>
+    <ul class="found" id="found"></ul>
+    <button class="btn primary" id="rSave" hidden>Add selected</button>
+    <p class="help" id="rMsg" role="status"></p>
+  </section>
+
+  <section id="lib" hidden>
+    <div class="bar">
+      <input type="text" id="q" placeholder="Search" aria-label="Search">
+      <select id="f" aria-label="Filter">
+        <option value="all">All</option><option value="solve">Solve</option><option value="read">Read</option><option value="liked">Liked</option><option value="hidden">Hidden</option>
+      </select>
+    </div>
+    <ul class="list" id="list"></ul>
+    <h3>Backup</h3>
+    <p class="help">Your list is saved in this browser only. Export a copy now and then, and import it on another device.</p>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="exp">Export</button>
+      <label class="btn" style="margin:0;color:var(--ink)">Import<input type="file" id="imp" accept=".json" hidden></label>
+    </div>
+  </section>
+</div>
+
+<script>
+const KEY = 'somethingGood.v1';
+const $ = s => document.querySelector(s);
+const h = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat().forEach(c => e.append(c));
+  return e;
+};
+
+const seed = () => [
+  ['https://projecteuler.net', 'Project Euler', 'solve', 'Math problems that need a bit of code'],
+  ['https://adventofcode.com', 'Advent of Code', 'solve', 'Puzzle every December, solve in any language'],
+  ['https://lichess.org/training', 'Lichess puzzles', 'solve', 'Endless chess tactics'],
+  ['https://www.nand2tetris.org', 'Nand2Tetris', 'read', 'Build a computer from logic gates'],
+  ['https://pudding.cool', 'The Pudding', 'read', 'Visual essays built on data']
+].map(([url, title, kind, note]) => mk(url, title, kind, note, 'sample'));
+
+function mk(url, title, kind, note = '', src = 'manual') {
+  return { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    url, title, kind, note, src, liked: false, hidden: false, shown: 0, last: 0, added: Date.now() };
+}
+let sites;
+try { sites = JSON.parse(localStorage.getItem(KEY)); } catch { sites = null; }
+if (!Array.isArray(sites)) sites = seed();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(sites)); } catch {} };
+
+const norm = u => { u = u.trim(); if (!u) return ''; if (!/^https?:\/\//i.test(u)) u = 'https://' + u; try { return new URL(u).href.replace(/\/$/, ''); } catch { return ''; } };
+const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+const exists = u => sites.some(s => s.url.toLowerCase() === u.toLowerCase());
+
+/* ---------- views ---------- */
+function show(v) {
+  ['draw', 'add', 'lib'].forEach(id => $('#' + id).hidden = id !== v);
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.v === v));
+  if (v === 'lib') renderList();
+  if (v === 'draw') renderCount();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.v));
+
+/* ---------- draw ---------- */
+let current = null, currentKind = null;
+function renderCount() {
+  const a = sites.filter(s => !s.hidden);
+  $('#count').textContent = `${a.filter(s => s.kind === 'solve').length} to solve, ${a.filter(s => s.kind === 'read').length} to read`;
+}
+function pick(kind) {
+  currentKind = kind;
+  const pool = sites.filter(s => !s.hidden && s.kind === kind);
+  const box = $('#result'); box.hidden = false;
+  if (!pool.length) {
+    box.replaceChildren(h('p', { class: 'empty' }, `Nothing to ${kind} yet. Add a website first.`));
+    return;
+  }
+  // go round the whole list before repeating; liked sites get double weight within each round
+  const min = Math.min(...pool.map(s => s.shown));
+  let round = pool.filter(s => s.shown === min);
+  if (round.length > 1 && current) round = round.filter(s => s.id !== current.id);
+  const weights = round.map(s => s.liked ? 2 : 1);
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0), chosen = round[0];
+  for (let i = 0; i < round.length; i++) { r -= weights[i]; if (r <= 0) { chosen = round[i]; break; } }
+  chosen.shown++; chosen.last = Date.now(); current = chosen; save();
+  renderResult();
+}
+function renderResult() {
+  const s = current, box = $('#result');
+  const like = h('button', { class: 'btn' + (s.liked ? ' on' : ''), 'aria-pressed': s.liked, onclick: () => { s.liked = !s.liked; save(); renderResult(); } }, s.liked ? 'Liked' : 'Like');
+  box.replaceChildren(
+    h('h2', {}, s.title),
+    h('p', { class: 'dom' }, host(s.url)),
+    s.note ? h('p', { class: 'note' }, s.note) : '',
+    h('div', { class: 'row' },
+      h('a', { class: 'btn primary', href: s.url, target: '_blank', rel: 'noopener noreferrer' }, 'Open site'),
+      like,
+      h('button', { class: 'btn', onclick: () => pick(currentKind) }, 'Another one'),
+      h('button', { class: 'btn', onclick: () => { s.hidden = true; save(); renderCount(); pick(currentKind); } }, 'Hide this')
+    )
+  );
+  box.classList.remove('flip'); void box.offsetWidth; box.classList.add('flip');
+}
+document.querySelectorAll('.tile').forEach(t => t.onclick = () => pick(t.dataset.k));
+
+/* ---------- add manually ---------- */
+$('#mAdd').onclick = () => {
+  const url = norm($('#mUrl').value), msg = $('#mMsg');
+  if (!url) { msg.textContent = 'Enter a valid link.'; return; }
+  if (exists(url)) { msg.textContent = 'That website is already in your list.'; return; }
+  const kind = document.querySelector('input[name=mKind]:checked').value;
+  sites.push(mk(url, $('#mTitle').value.trim() || host(url), kind, $('#mNote').value.trim()));
+  save(); msg.textContent = 'Saved.';
+  ['#mUrl', '#mTitle', '#mNote'].forEach(i => $(i).value = '');
+};
+
+/* ---------- add from reel ---------- */
+const SKIP = /(^|\.)(instagram\.com|cdninstagram\.com|facebook\.com|fb\.com|threads\.net|bit\.ly)$/i;
+const TLDS = 'com|org|net|io|dev|app|ai|edu|co|me|xyz|games|school|fun|cool|so|gg|tv|info|wiki|page|tools|city|world|academy|study|courses|codes|run|sh|in|uk|de|fr|nl|ca|au';
+function extract(text) {
+  const out = new Map();
+  const re = new RegExp(`(?:https?:\\/\\/)?(?:[a-z0-9-]+\\.)+(?:${TLDS})(?:\\/[^\\s,;)"']*)?`, 'gi');
+  for (let m of text.match(re) || []) {
+    m = m.replace(/[.,!?]+$/, '');
+    if (m.includes('@')) continue;
+    const u = norm(m);
+    if (!u || SKIP.test(host(u))) continue;
+    if (!out.has(u.toLowerCase())) out.set(u.toLowerCase(), u);
+  }
+  return [...out.values()];
+}
+let reelFound = [];
+$('#rFind').onclick = () => {
+  const list = $('#found'), msg = $('#rMsg');
+  reelFound = extract($('#rText').value);
+  list.replaceChildren(); $('#rSave').hidden = true;
+  if (!reelFound.length) { msg.textContent = 'No websites found in that text. You can add one by hand above.'; return; }
+  msg.textContent = '';
+  reelFound.forEach((u, i) => {
+    const dupe = exists(u);
+    list.append(h('li', {},
+      h('input', { type: 'checkbox', id: 'fc' + i, checked: !dupe, disabled: dupe, 'aria-label': 'Add ' + host(u) }),
+      h('span', { style: 'flex:1;word-break:break-all' }, u + (dupe ? ' (already saved)' : '')),
+      h('select', { id: 'fk' + i, 'aria-label': 'Type for ' + host(u) }, h('option', { value: 'solve' }, 'Solve'), h('option', { value: 'read' }, 'Read'))
+    ));
+  });
+  $('#rSave').hidden = false;
+};
+$('#rSave').onclick = () => {
+  const reel = $('#rLink').value.trim(), note = reel ? 'From a reel' : '';
+  let n = 0;
+  reelFound.forEach((u, i) => {
+    const c = $('#fc' + i);
+    if (c && c.checked && !c.disabled && !exists(u)) { const s = mk(u, host(u), $('#fk' + i).value, note, reel || 'instagram'); sites.push(s); n++; }
+  });
+  save();
+  $('#found').replaceChildren(); $('#rSave').hidden = true;
+  $('#rMsg').textContent = n ? `Added ${n} website${n > 1 ? 's' : ''}. Rename them in the Library if you like.` : 'Nothing selected.';
+  $('#rText').value = ''; $('#rLink').value = '';
+};
+
+/* ---------- library ---------- */
+function renderList() {
+  const q = $('#q').value.toLowerCase(), f = $('#f').value;
+  const rows = sites.filter(s => {
+    if (f === 'hidden') { if (!s.hidden) return false; } else if (s.hidden) return false;
+    if (f === 'solve' || f === 'read') { if (s.kind !== f) return false; }
+    if (f === 'liked' && !s.liked) return false;
+    return !q || (s.title + s.url + s.note).toLowerCase().includes(q);
+  }).sort((a, b) => b.added - a.added);
+  const ul = $('#list');
+  if (!rows.length) { ul.replaceChildren(h('li', { class: 'empty' }, 'Nothing here.')); return; }
+  ul.replaceChildren(...rows.map(s => h('li', {},
+    h('button', { class: 'pill ' + s.kind, title: 'Switch between solve and read', onclick: () => { s.kind = s.kind === 'solve' ? 'read' : 'solve'; save(); renderList(); } }, s.kind === 'solve' ? 'Solve' : 'Read'),
+    h('div', { class: 'main' },
+      h('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer' }, s.title),
+      h('small', {}, host(s.url) + (s.note ? ' · ' + s.note : '') + (s.shown ? ` · drawn ${s.shown}×` : ''))),
+    h('button', { class: 'icon' + (s.liked ? ' liked' : ''), 'aria-label': s.liked ? 'Unlike' : 'Like', 'aria-pressed': s.liked, onclick: () => { s.liked = !s.liked; save(); renderList(); } }, s.liked ? '♥' : '♡'),
+    s.hidden
+      ? h('button', { class: 'icon', 'aria-label': 'Unhide', title: 'Unhide', onclick: () => { s.hidden = false; save(); renderList(); } }, '↺')
+      : '',
+    h('button', { class: 'icon', 'aria-label': 'Delete ' + s.title, title: 'Delete', onclick: () => { if (confirm('Delete ' + s.title + '?')) { sites = sites.filter(x => x !== s); save(); renderList(); } } }, '✕')
+  )));
+}
+$('#q').oninput = renderList; $('#f').onchange = renderList;
+
+$('#exp').onclick = () => {
+  const a = h('a', { href: URL.createObjectURL(new Blob([JSON.stringify(sites, null, 2)], { type: 'application/json' })), download: 'something-good-backup.json' });
+  document.body.append(a); a.click(); a.remove();
+};
+$('#imp').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!Array.isArray(data)) throw 0;
+    let n = 0;
+    data.forEach(d => { if (d && d.url && !exists(d.url)) { sites.push({ ...mk(d.url, d.title || host(d.url), d.kind === 'read' ? 'read' : 'solve', d.note || '', d.src || 'import'), liked: !!d.liked, hidden: !!d.hidden, shown: +d.shown || 0 }); n++; } });
+    save(); renderList(); alert(`Imported ${n} new website${n === 1 ? '' : 's'}.`);
+  } catch { alert('That file is not a valid backup.'); }
+  e.target.value = '';
+};
+
+renderCount();
+</script>
+</body>
+</html>
